@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
 
@@ -15,6 +15,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class DishdetailComponent implements OnInit {
 
+  @ViewChild('fform') commentFormDirective;
   dish: Dish;
   dishIds: string[];
   prev: string;
@@ -73,8 +74,18 @@ export class DishdetailComponent implements OnInit {
     this.onValueChanged(); // (re)set validation messages now
   }
   onSubmit() {
+    this.commentForm.value.date = (new Date()).toISOString();
+    this.dish.comments.push(this.commentForm.value);
     console.log(this.commentForm.value);
+    this.commentFormDirective.resetForm();
+    this.commentForm.reset({
+      rating: 5,
+      comment: '',
+      author: '',
+      date: ''
+    });
   }
+
   onValueChanged(data?: any) {
     if (!this.commentForm) { return; }
     const form = this.commentForm;
